@@ -12,7 +12,7 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     try {
       const token = await login({ username, password });
-      setToken(token); // Armazenar o token
+      sessionStorage.setItem("token",setToken(token))// Armazenar o token
       navigate('/admin'); // Redireciona para a página admin
     } catch (error) {
       console.error('Login failed:', error);
