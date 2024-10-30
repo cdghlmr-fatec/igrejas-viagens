@@ -1,36 +1,20 @@
-import React from "react";
-import {RouterProvider,createBrowserRouter}  from 'react-router-dom';
-import Index from "./pages/Index";
-import SignUp from "./pages/SignUp";
-import SignIn from "./pages/SignIn";
-import Profile from "./pages/Profile";
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.js'
-import Root from "./components/Root";
+// src/App.jsx
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import Admin from './components/Admin';
 
-// function App() {
-//   const logout = () => {
-//     AuthService.logout();
-//   };
+const App = () => {
+  const [token, setToken] = useState('');
 
-const router = createBrowserRouter([
-  {path : "/", element: <Root />,
-    children:[
-      {path : "/", element: <Index />},
-      {path : "/signup", element: <SignUp />},
-      {path : "/signin", element: <SignIn />},
-      {path : "/profile", element: <Profile/>},
-      
-    ]
-  }
-])
-
-const App=()=>{
   return (
-    <>
-     <RouterProvider router={router} />
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login setToken={setToken} />} />
+        <Route path="/admin" element={<Admin token={token} />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
