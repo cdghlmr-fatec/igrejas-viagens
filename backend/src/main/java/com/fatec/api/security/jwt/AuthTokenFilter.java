@@ -41,6 +41,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
    * @throws ServletException If a servlet-related exception occurs.
    * @throws IOException If an input or output exception occurs.
    */
+  @SuppressWarnings("null")
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
           throws ServletException, IOException {

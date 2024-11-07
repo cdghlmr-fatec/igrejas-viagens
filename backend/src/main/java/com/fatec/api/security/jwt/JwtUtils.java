@@ -92,4 +92,13 @@ public class JwtUtils {
 
     return false; // Token is invalid
   }
+
+  public String generateResetToken(String username) {
+    return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + 3600000)) // 1 hora de expiração
+            .signWith(key(), SignatureAlgorithm.HS256)
+            .compact();
+  }
 }

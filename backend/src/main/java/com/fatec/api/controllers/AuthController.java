@@ -2,6 +2,7 @@ package com.fatec.api.controllers;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,12 +10,15 @@ import com.fatec.api.models.EmployeeRole;
 import com.fatec.api.models.Role;
 import com.fatec.api.models.User;
 import com.fatec.api.payload.request.LoginRequest;
+import com.fatec.api.payload.request.ResetPasswordConfirmRequest;
+import com.fatec.api.payload.request.ResetPasswordRequest;
 import com.fatec.api.payload.request.SignupRequest;
 import com.fatec.api.payload.response.JwtResponse;
 import com.fatec.api.payload.response.MessageResponse;
 import com.fatec.api.repository.RoleRepository;
 import com.fatec.api.repository.UserRepository;
 import com.fatec.api.security.jwt.JwtUtils;
+import com.fatec.api.security.services.EmailService;
 import com.fatec.api.security.services.UserDetailsImpl;
 
 import jakarta.validation.Valid;
@@ -50,6 +54,9 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils; // Utility for generating JWT tokens
+
+    @Autowired
+    EmailService emailService; // Service for sending emails
 
     /**
      * Authenticate user and return a JWT token if successful.
@@ -154,5 +161,48 @@ public class AuthController {
 
         // Return a success message upon successful registration
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    /**
+     * Request password reset.
+     *
+     * @param resetPasswordRequest The reset password request containing the email.
+     * @return A ResponseEntity indicating success or error message.
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> requestPasswordReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        String email = resetPasswordRequest.getEmail();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email not found!"));
+        }
+
+        User user = userOptional.get();
+        String token = jwtUtils.generateResetToken(user.getUsername()); // Método para gerar token
+        // Enviar e-mail com o link de reset (implementação do envio de e-mail necessária)
+        emailService.sendResetEmail(user.getEmail(), token);
+        
+        return ResponseEntity.ok(new MessageResponse("Reset password email sent!"));
+    }
+
+    @PostMapping("/reset-password/confirm")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordConfirmRequest resetPasswordConfirmRequest) {
+        String token = resetPasswordConfirmRequest.getToken();
+        String newPassword = resetPasswordConfirmRequest.getNewPassword();
+
+        // Validar o token e obter o username
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid token!"));
+        }
+
+        User user = userOptional.get();
+        user.setPassword(encoder.encode(newPassword)); // Codificar a nova senha
+        userRepository.save(user);
+        
+        return ResponseEntity.ok(new MessageResponse("Password has been reset successfully!"));
     }
 }

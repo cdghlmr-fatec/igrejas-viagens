@@ -19,6 +19,8 @@ public interface UserRepository extends MongoRepository<User, String> {
    */
   Optional<User> findByUsername(String username);
 
+
+
   /**
    * Check if a username already exists in the database.
    *
@@ -34,4 +36,6 @@ public interface UserRepository extends MongoRepository<User, String> {
    * @return A Boolean indicating whether the email exists (true) or not (false).
    */
   Boolean existsByEmail(String email);
+
+  Optional<User> findByEmail(String email);
 }
