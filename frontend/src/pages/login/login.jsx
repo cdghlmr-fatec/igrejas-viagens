@@ -7,30 +7,42 @@ import logo from '../../assets/ConexAp.png';
 import fundo from '../../assets/fundoConex.jpg';
 
 export function Login() {
-  // Declare state for form fields and error handling
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // To redirect after successful login
+  const [loading, setLoading] = useState(false);  // Novo estado de carregamento
+  const navigate = useNavigate();  // Para redirecionar após login
 
-  // Function to handle the login form submission
+  // Função para lidar com o envio do formulário de login
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    try {
-      // Send a POST request with the username and password
-      const response = await axios.post('https://gruesome-coffin-jjr4jxrvg6vj3grp-8081.app.github.dev/api/auth/signin', {
-        username,
-        password
-      });
+    e.preventDefault();  // Previne o comportamento padrão do formulário
+    setError(null);  // Reseta erros antes da nova tentativa
+    setLoading(true);  // Ativa o carregamento (loading)
 
-      const { accessToken } = response.data;
-      localStorage.setItem('token', accessToken); // Save token to localStorage
-      console.log(response.data)
-      console.log(accessToken)
+    try {
+      const response = await axios.post('https://bug-free-pancake-69vr9jvqpj4x2459p-8081.app.github.dev/api/auth/signin', { username, password });
+      const { jwt, roles } = response.data;
+     
+      localStorage.setItem('token', jwt);
+      localStorage.setItem('roles', JSON.stringify(roles)); 
+
+      // Redireciona com base nas roles do usuário
+      if (roles.includes('admin')) {
+        navigate('/admin');
+      } else if (roles.includes('coordenador')) {
+        navigate('/coordenador');
+      } else if (roles.includes('secretaria')) {
+        navigate('/secretaria');
+      } else {
+        // Se o usuário não tiver um papel adequado, redireciona para uma página de erro ou login
+        navigate('/login');
+      }
+
       alert('Login bem-sucedido');
-      navigate('/secretaria'); // Redirect to the dashboard or protected page
     } catch (error) {
-      setError('Usuário ou senha incorretos');
+      setError(error.response?.data?.message || 'Usuário ou senha incorretos');
+    } finally {
+      setLoading(false);  // Finaliza o carregamento (loading)
     }
   };
 
@@ -51,7 +63,7 @@ export function Login() {
               type="text"
               placeholder="E-mail"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}  // Bind username state
+              onChange={(e) => setUsername(e.target.value)}  // Atualiza o estado do username
               required
             />
           </div>
@@ -61,13 +73,17 @@ export function Login() {
               type="password"
               placeholder="Senha"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}  // Bind password state
+              onChange={(e) => setPassword(e.target.value)}  // Atualiza o estado da senha
               required
             />
           </div>
-          {error && <div className="mt-2 text-danger">{error}</div>}  {/* Display error message */}
+
+          {error && <div className="mt-2 text-danger">{error}</div>}  {/* Exibe a mensagem de erro, se houver */}
+
           <div className="mt-3 mb-5">
-            <button className="btn-login btn btn-primary w-75" type="submit">Login</button>
+            <button className="btn-login btn btn-primary w-75" type="submit" disabled={loading}>
+              {loading ? 'Carregando...' : 'Login'}  {/* Mostra "Carregando..." durante o processo */}
+            </button>
           </div>
 
           <div>

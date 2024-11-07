@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './secretaria.css';
+import './admin.css';
 
-export function Secretaria() {
+export function Admin() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ export function Secretaria() {
       navigate('/login');
     } else {
       // Verificar se o usuário tem a role de admin
-      if (!roles.includes('secretaria')) {
+      if (!roles.includes('admin')) {
         // Se o usuário não tem a role de admin, redireciona para o login
         navigate('/login');
       } else {
@@ -45,7 +45,7 @@ export function Secretaria() {
 
   return (
     <div className="dashboard-container">
-      <h1>Bem-vindo à Secretaria!</h1>
+      <h1>Bem-vindo à Administração!</h1>
 
       {user ? (
         <div className="user-info">
