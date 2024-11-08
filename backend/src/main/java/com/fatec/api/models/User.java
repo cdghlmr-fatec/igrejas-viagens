@@ -7,13 +7,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
-  
   @Id
   private String id;
 
@@ -29,19 +30,18 @@ public class User {
   @NotBlank
   @Size(max = 120)
   private String password;
-
-  @NotBlank
-  @Size(max = 100)
-  private String church; // Campo para armazenar a igreja
-
-  @NotBlank
-  @Size(max = 15) // Ajuste o tamanho conforme o formato de telefone que deseja
-  private String phone; // Campo para armazenar o telefone
-
+  
   @DBRef
   private Set<Role> roles = new HashSet<>();
 
-  // Construtores
+  @NotBlank
+  @Size(max = 100)
+  private String church; 
+
+  @NotBlank
+  @Size(max = 15)
+  private String phone; 
+
   public User() {
   }
 
@@ -53,7 +53,6 @@ public class User {
     this.phone = phone;
   }
 
-  // Getters e Setters
   public String getId() {
     return id;
   }
@@ -86,6 +85,14 @@ public class User {
     this.password = password;
   }
 
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
   public String getChurch() {
     return church;
   }
@@ -100,13 +107,5 @@ public class User {
 
   public void setPhone(String phone) {
     this.phone = phone;
-  }
-
-  public Set<Role> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Set<Role> roles) {
-    this.roles = roles;
   }
 }

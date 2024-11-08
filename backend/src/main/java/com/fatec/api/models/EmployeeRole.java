@@ -1,7 +1,8 @@
 package com.fatec.api.models;
 
 public enum EmployeeRole {
-  admin,
-  coordenador,
-  secretaria
+  ROLE_ADMIN,
+  ROLE_SECRETARIA,
+  ROLE_COORDENADOR,
 }
+
