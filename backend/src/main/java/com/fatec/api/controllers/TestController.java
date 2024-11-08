@@ -27,22 +27,11 @@ public class TestController {
 	 * @return A string message indicating user content.
 	 */
 	@GetMapping("/user") // Map GET requests to "/api/test/user"
-	@PreAuthorize("hasRole('USER') or " + // Require USER, MODERATOR, or ADMIN role
-			"hasRole('MODERATOR') or " +
+	@PreAuthorize("hasRole('SECRETARIA') or " + // Require USER, MODERATOR, or ADMIN role
+			"hasRole('COORDENADOR') or " +
 			"hasRole('ADMIN')")
 	public String userAccess() {
 		return "User Content."; // Return a message accessible by users with the required roles
-	}
-
-	/**
-	 * Endpoint accessible only to users with the MODERATOR role.
-	 *
-	 * @return A string message indicating moderator board content.
-	 */
-	@GetMapping("/mod") // Map GET requests to "/api/test/mod"
-	@PreAuthorize("hasRole('MODERATOR')") // Require MODERATOR role
-	public String moderatorAccess() {
-		return "Moderator Board."; // Return a message accessible by moderators
 	}
 
 	/**
@@ -54,5 +43,27 @@ public class TestController {
 	@PreAuthorize("hasRole('ADMIN')") // Require ADMIN role
 	public String adminAccess() {
 		return "Admin Board."; // Return a message accessible by admins
+	}
+
+		/**
+	 * Endpoint accessible only to users with the MODERATOR role.
+	 *
+	 * @return A string message indicating moderator board content.
+	 */
+	@GetMapping("/secretaria") // Map GET requests to "/api/test/mod"
+	@PreAuthorize("hasRole('SECRETARIA')") // Require MODERATOR role
+	public String secretariaAccess() {
+		return "Secretaria Board."; // Return a message accessible by moderators
+	}
+
+		/**
+	 * Endpoint accessible only to users with the MODERATOR role.
+	 *
+	 * @return A string message indicating moderator board content.
+	 */
+	@GetMapping("/coordenador") // Map GET requests to "/api/test/mod"
+	@PreAuthorize("hasRole('COORDENADOR')") // Require MODERATOR role
+	public String coordenadorAccess() {
+		return "Coordenador Board."; // Return a message accessible by moderators
 	}
 }

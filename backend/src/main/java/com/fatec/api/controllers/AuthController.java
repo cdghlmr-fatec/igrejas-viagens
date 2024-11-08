@@ -130,24 +130,24 @@ public class AuthController {
 
         // Assign roles based on the request or default to user role
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(EmployeeRole.admin)
+            Role userRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "secretaria":
-                        Role secretaryRole = roleRepository.findByName(EmployeeRole.secretaria)
+                        Role secretaryRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(secretaryRole);
                         break;
                     case "coordenador":
-                        Role coordinatorRole = roleRepository.findByName(EmployeeRole.coordenador)
+                        Role coordinatorRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(coordinatorRole);
                         break;
                     default:
-                        Role defaultRole = roleRepository.findByName(EmployeeRole.admin)
+                        Role defaultRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(defaultRole);
                 }
