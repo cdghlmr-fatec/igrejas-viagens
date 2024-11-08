@@ -101,6 +101,7 @@ public class WebSecurityConfig {
                     // Allow public access to auth endpoints
                     .requestMatchers("/api/test/**").permitAll()
                     // Allow public access to test endpoints
+                    .requestMatchers("/api/auth/send-password").permitAll() // Permitir acesso sem autenticação
                     .anyRequest().authenticated());
     // Require authentication for any other request
 

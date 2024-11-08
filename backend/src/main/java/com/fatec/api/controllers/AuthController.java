@@ -2,7 +2,9 @@ package com.fatec.api.controllers;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fatec.api.models.EmployeeRole;
@@ -10,12 +12,14 @@ import com.fatec.api.models.Role;
 import com.fatec.api.models.User;
 import com.fatec.api.payload.request.LoginRequest;
 import com.fatec.api.payload.request.SignupRequest;
+import com.fatec.api.payload.request.SendPasswordRequest; // Importa a nova classe de solicitação
 import com.fatec.api.payload.response.JwtResponse;
 import com.fatec.api.payload.response.MessageResponse;
 import com.fatec.api.repository.RoleRepository;
 import com.fatec.api.repository.UserRepository;
 import com.fatec.api.security.jwt.JwtUtils;
 import com.fatec.api.security.services.UserDetailsImpl;
+import com.fatec.api.services.AdminService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,125 +34,144 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailSendException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@CrossOrigin(origins = "*", maxAge = 3600) // Allow cross-origin requests for all origins
-@RestController // Indicate that this class is a REST controller
-@RequestMapping("/api/auth") // Base URL for authentication-related endpoints
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
-	@Autowired
-	AuthenticationManager authenticationManager; // Handles user authentication
+    @Autowired
+    AuthenticationManager authenticationManager;
 
-	@Autowired
-	UserRepository userRepository; // Repository for user-related database operations
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	RoleRepository roleRepository; // Repository for role-related database operations
+    @Autowired
+    RoleRepository roleRepository;
 
-	@Autowired
-	PasswordEncoder encoder; // Encoder for password hashing
+    @Autowired
+    PasswordEncoder encoder;
 
-	@Autowired
-	JwtUtils jwtUtils; // Utility for generating JWT tokens
+    @Autowired
+    JwtUtils jwtUtils;
 
-	/**
-	 * Authenticate user and return a JWT token if successful.
-	 *
-	 * @param loginRequest The login request containing username and password.
-	 * @return A ResponseEntity containing the JWT response or an error message.
-	 */
-	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @Autowired
+    private JavaMailSender mailSender;
 
-		// Authenticate the user with the provided username and password
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-						loginRequest.getPassword()));
+    @Autowired
+    private AdminService adminService;
 
-		// Set the authentication in the security context
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-		// Generate JWT token based on the authentication
-		String jwt = jwtUtils.generateJwtToken(authentication);
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword()));
 
-		// Get user details from the authentication object
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-		// Extract user roles into a list
-		List<String> roles = userDetails.getAuthorities().stream()
-				.map(item -> item.getAuthority())
-				.collect(Collectors.toList());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
 
-		// Return a response containing the JWT and user details
-		return ResponseEntity.ok(new JwtResponse(jwt,
-				userDetails.getId(),
-				userDetails.getUsername(),
-				userDetails.getEmail(),
-				roles));
-	}
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles));
+    }
 
-	/**
-	 * Register a new user account.
-	 *
-	 * @param signUpRequest The signup request containing user details.
-	 * @return A ResponseEntity indicating success or error message.
-	 */
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
 
-		// Check if the username is already taken
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
 
-		// Check if the email is already in use
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
-		}
+        User user = new User(signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getChurch(), signUpRequest.getPhone());
 
-		// Create a new user's account
-		User user = new User(signUpRequest.getUsername(),
-				signUpRequest.getEmail(),
-				encoder.encode(signUpRequest.getPassword()), signUpRequest.getChurch(), signUpRequest.getPhone()); // Encode the password
+        Set<String> strRoles = signUpRequest.getRoles();
+        Set<Role> roles = new HashSet<>();
 
-		Set<String> strRoles = signUpRequest.getRoles(); // Get the roles from the request
-		Set<Role> roles = new HashSet<>(); // Initialize a set to hold the user roles
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "ADMIN":
+                        Role adminRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                        break;
+                    case "COORDENADOR":
+                        Role modRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(modRole);
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                }
+            });
+        }
 
-		// Assign roles based on the request or default to user role
-		if (strRoles == null) {
-			Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-				switch (role) {
-					case "ADMIN":
-						Role adminRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(adminRole);
-						break;
-					case "COORDENADOR":
-						Role modRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(modRole);
-						break;
-					default:
-						Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(userRole);
-				}
-			});
-		}
+        user.setRoles(roles);
+        userRepository.save(user);
 
-		// Assign roles to the user and save it to the database
-		user.setRoles(roles);
-		userRepository.save(user);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
 
-		// Return a success message upon successful registration
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-	}
+    @PostMapping("/send-password")
+    public ResponseEntity<?> sendPassword(@Valid @RequestBody SendPasswordRequest request) {
+        // Usar AdminService para buscar o usuário por e-mail
+        User user = adminService.getUserByEmail(request.getEmail());
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email not found!"));
+        }
+
+        // Gerar nova senha temporária
+        String newPassword = generateRandomPassword();
+        user.setPassword(encoder.encode(newPassword));
+        adminService.updateUser(user.getId(), user);
+
+        // Enviar e-mail com a nova senha
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Nova Senha");
+        message.setText("Sua nova senha é: " + newPassword);
+        try {
+            mailSender.send(message);
+        } catch (MailSendException e) {
+            // Log the error and provide feedback
+            logger.error("Failed to send email: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to send email!"));
+        }
+
+        return ResponseEntity.ok(new MessageResponse("Nova senha enviada para o e-mail!"));
+    }
+
+    // Método para gerar uma senha aleatória
+    private String generateRandomPassword() {
+        return UUID.randomUUID().toString().substring(0, 8);
+    }
 }
