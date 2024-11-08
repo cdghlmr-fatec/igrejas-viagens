@@ -113,31 +113,31 @@ public class AuthController {
 		// Create a new user's account
 		User user = new User(signUpRequest.getUsername(),
 				signUpRequest.getEmail(),
-				encoder.encode(signUpRequest.getPassword())); // Encode the password
+				encoder.encode(signUpRequest.getPassword()), signUpRequest.getChurch(), signUpRequest.getPhone()); // Encode the password
 
 		Set<String> strRoles = signUpRequest.getRoles(); // Get the roles from the request
 		Set<Role> roles = new HashSet<>(); // Initialize a set to hold the user roles
 
 		// Assign roles based on the request or default to user role
 		if (strRoles == null) {
-			Role userRole = roleRepository.findByName(EmployeeRole.ROLE_USER)
+			Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
 				switch (role) {
-					case "admin":
+					case "ADMIN":
 						Role adminRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(adminRole);
 						break;
-					case "mod":
-						Role modRole = roleRepository.findByName(EmployeeRole.ROLE_MODERATOR)
+					case "COORDENADOR":
+						Role modRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(modRole);
 						break;
 					default:
-						Role userRole = roleRepository.findByName(EmployeeRole.ROLE_USER)
+						Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(userRole);
 				}

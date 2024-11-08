@@ -3,8 +3,9 @@ package com.fatec.api.payload.request;
 import java.util.Set;
 
 import jakarta.validation.constraints.*;
- 
+
 public class SignupRequest {
+  
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;
@@ -19,7 +20,16 @@ public class SignupRequest {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    @NotBlank
+    @Size(max = 100)
+    private String church; // Novo campo: Igreja
+
+    @NotBlank
+    @Size(max = 15) // Ajuste o tamanho conforme o formato de telefone
+    private String phone; // Novo campo: Telefone
   
+    // Getters e Setters
     public String getUsername() {
         return username;
     }
@@ -43,12 +53,28 @@ public class SignupRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public Set<String> getRoles() {
-      return this.roles;
+        return this.roles;
     }
     
-    public void setRole(Set<String> roles) {
-      this.roles = roles;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public String getChurch() {
+        return church;
+    }
+
+    public void setChurch(String church) {
+        this.church = church;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

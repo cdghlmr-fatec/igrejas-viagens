@@ -1,11 +1,132 @@
 {
 	"info": {
-		"_postman_id": "58b8caf7-004f-4af3-9edc-8584abd1f94f",
-		"name": "JWT_Collection",
+		"_postman_id": "a0db9e3e-17d3-41d6-9d54-7453f5726f98",
+		"name": "Fatec-PI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "37416421"
+		"_exporter_id": "35066661",
+		"_collection_link": "https://lively-crater-554540.postman.co/workspace/danielvor~bb0ff63e-6e25-40e7-8861-369cd28300dc/collection/35066661-a0db9e3e-17d3-41d6-9d54-7453f5726f98?action=share&source=collection_link&creator=35066661"
 	},
 	"item": [
+		{
+			"name": "Admin Requests",
+			"item": [
+				{
+					"name": "Admin Board -  All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW5pZWwiLCJpYXQiOjE3MzEwMzY0MzMsImV4cCI6MTczMTEyMjgzM30.Tzbu8L1Gfgip96dqUhpO8i8b9xyDBPqf1KN5EG1j_pM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Board - User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW5pZWwiLCJpYXQiOjE3MzEwMzY0MzMsImV4cCI6MTczMTEyMjgzM30.Tzbu8L1Gfgip96dqUhpO8i8b9xyDBPqf1KN5EG1j_pM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/672d562261829a66183192c4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"672d562261829a66183192c4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Secretaria Requests",
+			"item": [
+				{
+					"name": "Secretaria Board",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW5pZWwiLCJpYXQiOjE3MzEwMzQ4MTgsImV4cCI6MTczMTEyMTIxOH0.fZ5ZkKmfqBAvqfm5nIDvyMIj7_3GwDYnjWqz1xZgq7A",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/secretaria",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"secretaria"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coordenador Requests",
+			"item": [
+				{
+					"name": "Coordenador Board",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW5pZWwiLCJpYXQiOjE3MzEwMzQ4MTgsImV4cCI6MTczMTEyMTIxOH0.fZ5ZkKmfqBAvqfm5nIDvyMIj7_3GwDYnjWqz1xZgq7A",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/coordenador",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"coordenador"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Signup",
 			"request": {
@@ -13,7 +134,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"dasdas\",\n    \"email\": \"moderator@hotmail.com\",\n    \"roles\": [\"mod\", \"admin\"],\n    \"password\": \"Hungrytt\"\n}",
+					"raw": "{\n    \"username\": \"daniel\",\n    \"email\": \"this.daniel@outlook.com\",\n    \"roles\": [\"ADMIN\", \"SECRETARIA\", \"COORDENADOR\"],\n    \"password\": \"12345678\",\n    \"phone\": \"11948222885\",\n    \"church\": \"Igreja Batista em Vila Esperança\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,7 +164,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \n    \"username\": \"aman\",\n    \"password\": \"Hungry@123\"\n}",
+					"raw": "{ \n    \"username\": \"daniel\",\n    \"password\": \"12345678\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -51,8 +172,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/auth/signin",
-					"protocol": "http",
+					"raw": "localhost:8080/api/auth/signin",
 					"host": [
 						"localhost"
 					],
@@ -67,19 +187,27 @@
 			"response": []
 		},
 		{
+			"name": "Reset Password",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
 			"name": "Public",
 			"request": {
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoc2FodSIsImlhdCI6MTcyMjYxNjE2OSwiZXhwIjoxNzIyNzAyNTY5fQ.1HPplYPm_ISQjOLOYmtQ_hjPfsa8q4OFaCdZ3GTRahU",
+						"value": "Bearer {{vault:json-web-token}}",
 						"type": "text",
 						"disabled": true
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/test/all",
+					"raw": "http://localhost:8080/api/test/public",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -88,25 +216,25 @@
 					"path": [
 						"api",
 						"test",
-						"all"
+						"public"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "User",
+			"name": "Private",
 			"request": {
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyaJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlcmF0b3JfdXNlciIsImlhdCI6MTcyMjY3NzM0MCwiZXhwIjoxNzIyNzYzNzQwfQ.QL5NwIUifvD3JpIdsZhJozz_m7pA9vzt5c4Va56jXwg",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW5pZWwiLCJpYXQiOjE3MzEwMzUyOTQsImV4cCI6MTczMTEyMTY5NH0.FU_y8SV-CErk-tJxxLGmkCrUZMX3uNb-fsnEeRwkwlw",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/test/user",
+					"raw": "http://localhost:8080/api/test/private",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -115,61 +243,7 @@
 					"path": [
 						"api",
 						"test",
-						"user"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlcmF0b3JfdXNlciIsImlhdCI6MTcyMjY3NzM0MCwiZXhwIjoxNzIyNzYzNzQwfQ.QL5NwIUifvD3JpIdsZhJozz_m7pA9vzt5c4Va56jXwg",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/test/admin",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"test",
-						"admin"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Moderator",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlcmF0b3JfdXNlciIsImlhdCI6MTcyMjY3NzM0MCwiZXhwIjoxNzIyNzYzNzQwfQ.QL5NwIUifvD3JpIdsZhJozz_m7pA9vzt5c4Va56jXwg",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/test/mod",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"test",
-						"mod"
+						"private"
 					]
 				}
 			},
