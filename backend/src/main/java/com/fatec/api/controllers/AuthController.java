@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.fatec.api.models.EmployeeRole;
 import com.fatec.api.models.Role;
 import com.fatec.api.models.User;
+import com.fatec.api.payload.request.EditUserRequest;
 import com.fatec.api.payload.request.LoginRequest;
 import com.fatec.api.payload.request.ResetPasswordConfirmRequest;
 import com.fatec.api.payload.request.ResetPasswordRequest;
@@ -30,7 +31,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -205,4 +209,74 @@ public class AuthController {
         
         return ResponseEntity.ok(new MessageResponse("Password has been reset successfully!"));
     }
+
+      /**
+     * Edit user data - Only accessible by admin.
+     *
+     * @param userId The ID of the user to be edited.
+     * @param editUserRequest The request body containing the new user data.
+     * @return A ResponseEntity indicating success or failure.
+     */
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<?> editUser(@Valid @PathVariable String userId, @RequestBody EditUserRequest editUserRequest) {
+        // Verify that the authenticated user is an admin
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return ResponseEntity.status(403).body(new MessageResponse("Error: Access is denied! Admin role is required."));
+        }
+
+        // Find the user by ID
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: User not found."));
+        }
+
+        User user = userOptional.get();
+
+        // Update user details
+        if (editUserRequest.getUsername() != null) {
+            user.setUsername(editUserRequest.getUsername());
+        }
+        if (editUserRequest.getEmail() != null) {
+            user.setEmail(editUserRequest.getEmail());
+        }
+        if (editUserRequest.getPhone() != null) {
+            user.setPhone(editUserRequest.getPhone());
+        }
+        if (editUserRequest.getChurch() != null) {
+            user.setChurch(editUserRequest.getChurch());
+        }
+
+        // Save updated user
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("User data updated successfully."));
+    }
+
+    /**
+     * Delete user - Only accessible by admin.
+     *
+     * @param userId The ID of the user to be deleted.
+     * @return A ResponseEntity indicating success or failure.
+     */
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable String userId) {
+        // Verify that the authenticated user is an admin
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return ResponseEntity.status(403).body(new MessageResponse("Error: Access is denied! Admin role is required."));
+        }
+
+        // Find the user by ID
+        Optional<User> userOptional = userRepository.findByEmail(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: User not found."));
+        }
+
+        // Delete the user
+        userRepository.delete(userOptional.get());
+
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully."));
+    }
+
 }
