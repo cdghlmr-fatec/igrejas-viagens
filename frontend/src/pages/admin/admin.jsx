@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../../components/navbar/navbar.jsx';
 import './admin.css';
 
 export function Admin() {
@@ -111,11 +110,10 @@ export function Admin() {
     };
 
     return (
-        <div className="container mt-4">
-            <Navbar />
-            <h1 className="text-center mb-4">Admin - Gerenciar Usuários</h1>
-            <div className="content">
+        <div>
+            <div className="content-admin">
                 <div className="form-container">
+                    <h1 className="text-center mb-4">Admin - Gerenciar Usuários</h1>
                     <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded bg-light">
                         <div className="mb-3">
                             <input type="text" className="form-control" placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
@@ -159,13 +157,18 @@ export function Admin() {
                     <ul className="list-group">
                         {users.map(user => (
                             <li key={user.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                <span>
-                                    <strong>{user.username}</strong> - {user.email}
-                                </span>
                                 <div>
-                                    <button onClick={() => handleEdit(user)} className="btn btn-warning btn-sm me-2">Editar</button>
-                                    <button onClick={() => handleDelete(user.id)} className="btn btn-danger btn-sm">Deletar</button>
+                                    <strong>{user.username}</strong> ({user.email})
+                                    <br />
+                                    <small>{user.phone} - {user.church}</small>
+                                    <br />
+                                    <small>Roles: {user.roles.map(role => role.name).join(', ')}</small>
                                 </div>
+                                <div>
+                                    <button className="btn btn-warning me-2" onClick={() => handleEdit(user)}>Editar</button>
+                                    <button className="btn btn-danger" onClick={() => handleDelete(user.id)}>Excluir</button>
+                                </div>
+                                
                             </li>
                         ))}
                     </ul>

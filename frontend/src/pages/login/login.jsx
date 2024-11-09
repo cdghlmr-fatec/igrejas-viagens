@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
 import './login.css';
 
 import logo from '../../assets/ConexAp.png';
@@ -20,7 +19,7 @@ export function Login() {
         setLoading(true);
     
         try {
-            const response = await axios.post('https://miniature-journey-559g9jp76j4cvg9v-8090.app.github.dev/api/auth/signin', { username, password });
+            const response = await axios.post('http://localhost:8080/api/auth/signin', { username, password });
             const { accessToken, roles } = response.data;
     
             console.log('Roles:', roles); // Verifique as roles retornadas

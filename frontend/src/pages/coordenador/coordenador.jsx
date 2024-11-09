@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/navbar/navbar.jsx';
 
 export function Coordenador() {
     const [user, setUser] = useState(null);
@@ -22,18 +21,28 @@ export function Coordenador() {
         setUser({ username: 'coordenador', email: 'coordenador@example.com' });
     };
 
+
+    // Função para logout
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Remover o token do localStorage
+        localStorage.removeItem('roles'); // Remover as roles do localStorage
+        navigate('/login'); // Redireciona para a página de login
+    };
+
     return (
         <div className="dashboard-container">
-            <Navbar />
-            <h1>Bem-vindo à Coordenação!</h1>
-            {user ? (
-                <div className="user-info">
-                    <p><strong>Nome:</strong> {user.username}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                </div>
-            ) : (
-                <p>Carregando informações do usuário...</p>
-            )}
+        <h1>Bem-vindo à Secretaria!</h1>
+
+        {user ? (
+            <div className="user-info">
+            <p><strong>Nome:</strong> {user.username}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            </div>
+        ) : (
+            <p>Carregando informações do usuário...</p>
+        )}
+
+        <button className="btn btn-danger" onClick={handleLogout}>Sair</button>
         </div>
     );
 }

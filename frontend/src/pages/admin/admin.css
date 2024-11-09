@@ -1,92 +1,14 @@
-.dashboard-container {
-  padding: 20px;
-  padding-top: 40px;
-  font-family: Arial, sans-serif;
-}
-
-.content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding-top: 20%;
-  display: flex;
+.content-admin {
+  display: flex; /* Usar flexbox para layout lado a lado */
+  flex-direction: row;
   gap: 20px;
-}
-
-h1, h2 {
-  color: #333;
-  text-align: center;
+  margin: 150px 50px 0px 50px;
 }
 
 .form-container {
-  flex: 1;
-}
-
-.user-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  gap: 10px;
-}
-
-.user-form input, .user-form button {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.user-form button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.user-form button:hover {
-  background-color: #0056b3;
+  flex: 1; /* Permite que o formulário ocupe o espaço disponível */
 }
 
 .user-list {
-  flex: 1;
-}
-
-.user-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-btn, .delete-btn {
-  padding: 5px 10px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: white;
-  transition: background-color 0.3s ease;
-}
-
-.edit-btn {
-  background-color: #28a745;
-}
-
-.edit-btn:hover {
-  background-color: #218838;
-}
-
-.delete-btn {
-  background-color: #dc3545;
-}
-
-.delete-btn:hover {
-  background-color: #c82333;
+  flex: 2; /* Permite que a lista de usuários ocupe o espaço disponível */
 }
