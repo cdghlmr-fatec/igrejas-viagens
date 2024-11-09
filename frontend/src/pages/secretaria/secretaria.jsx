@@ -16,7 +16,7 @@ export function Secretaria() {
       navigate('/login');
     } else {
       // Verificar se o usuário tem a role de admin
-      if (!roles.includes('secretaria')) {
+      if (!roles.includes('ROLE_SECRETARIA')) {
         // Se o usuário não tem a role de admin, redireciona para o login
         navigate('/login');
       } else {

@@ -74,7 +74,7 @@ export function Solicitacao() {
 
     const config = {
       method: 'post',
-      url: 'http://localhost:8080/api/auth/signup',
+      url: 'https://miniature-journey-559g9jp76j4cvg9v-8090.app.github.dev/api/auth/signup',
       headers: {
         'Content-Type': 'application/json',
       },

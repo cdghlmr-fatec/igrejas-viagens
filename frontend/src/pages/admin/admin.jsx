@@ -10,7 +10,7 @@ export function Admin() {
         const token = localStorage.getItem('token');
         const roles = JSON.parse(localStorage.getItem('roles'));
 
-        if (!token || !roles || !roles.includes('admin')) {
+        if (!token || !roles || !roles.includes('ROLE_ADMIN')) {
             navigate('/login');
         } else {
             fetchUserData(token);

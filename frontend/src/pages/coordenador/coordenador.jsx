@@ -10,7 +10,7 @@ export function Coordenador() {
         const token = localStorage.getItem('token');
         const roles = JSON.parse(localStorage.getItem('roles'));
 
-        if (!token || !roles || !roles.includes('coordenador')) {
+        if (!token || !roles || !roles.includes('ROLE_COORDENADOR')) {
             navigate('/login');
         } else {
             fetchUserData(token);

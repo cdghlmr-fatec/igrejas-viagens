@@ -18,30 +18,40 @@ export function Login() {
         e.preventDefault();
         setError(null);
         setLoading(true);
-
+    
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/signin', { username, password });
-            const { accessToken } = response.data;
-
-            const decodedToken = jwtDecode(accessToken);
-            const roles = decodedToken.roles;
-
+            const response = await axios.post('https://miniature-journey-559g9jp76j4cvg9v-8090.app.github.dev/api/auth/signin', { username, password });
+            const { accessToken, roles } = response.data;
+    
+            console.log('Roles:', roles); // Verifique as roles retornadas
+    
             localStorage.setItem('token', accessToken);
             localStorage.setItem('roles', JSON.stringify(roles));
-
-            if (roles.includes('ROLE_ADMIN')) {
-                navigate('/admin');
-            } else if (roles.includes('ROLE_COORDENADOR')) {
-                navigate('/coordenador');
-            } else if (roles.includes('ROLE_SECRETARIA')) {
-                navigate('/secretaria');
+    
+            // Verifique se roles é um array
+            if (Array.isArray(roles)) {
+                if (roles.includes('ROLE_ADMIN')) {
+                    alert("Bem vindo a Administração!");
+                    navigate('/admin');
+                } else if (roles.includes('ROLE_COORDENADOR')) {
+                    alert("Bem vindo a Coordenação!");
+                    navigate('/coordenador');
+                } else if (roles.includes('ROLE_SECRETARIA')) {
+                    alert("Bem vindo a Secretaria!");
+                    navigate('/secretaria');
+                } else {
+                    console.error('Role não reconhecida:', roles);
+                    navigate('/login');
+                }
             } else {
+                console.error('Roles não é um array:', roles);
                 navigate('/login');
             }
-
+    
             alert('Login bem-sucedido');
         } catch (error) {
-            setError(error.response?.data?.message || 'Usuário ou senha incorretos');
+            setError('Erro ao fazer login. Verifique suas credenciais.');
+            console.error(error);
         } finally {
             setLoading(false);
         }
