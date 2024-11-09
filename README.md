@@ -1,31 +1,8 @@
-## Configuração do Backend
+# React + Vite
 
-Configure as seguintes propriedades no arquivo application.properties
-- propertiesspring.data.mongodb.uri = <sua-string-de-conexão-mongodb>
-- jwtSecret= <sua-chave-secreta-jwt>
-- jwtExpirationMs= 86400000
-- server.port=8080
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Endpoints da API
-### Autenticação
-- `POST /api/auth/signin`: Autentica o usuário e retorna um token JWT.
-- `POST /api/auth/signup`: Registra um novo usuário.
+Currently, two official plugins are available:
 
-### Administração
-- `GET /api/admin`: Retorna todos os usuários.
-- `GET /api/admin/{id}`: Retorna um usuário pelo ID.
-- `POST /api/admin`: Cria um novo usuário.
-- `PUT /api/admin/{id}`: Atualiza um usuário pelo ID.
-- `DELETE /api/admin/{id}`: Deleta um usuário pelo ID.
-
-### Teste
-- `GET /api/test/public`: Acesso público.
-- `GET /api/test/private`: Acesso privado (requer autenticação).
-
-## Autenticação e Autorização
-O projeto utiliza JWT para autenticação e autorização. O token JWT é gerado no login e deve ser incluído no cabeçalho `Authorization` das requisições subsequentes.
-
-### Exemplo de Cabeçalho de Autorização
-```
-Authorization: Bearer <seu-token-jwt>
-```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
