@@ -1,25 +1,91 @@
 .dashboard-container {
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .dashboard-container h1 {
-    margin-bottom: 1rem;
-  }
-  
-  .user-info {
-    margin: 1.5rem 0;
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  
-  .user-info p {
-    font-size: 1.1rem;
-    color: #333;
-  }
-  
-  button {
-    margin-top: 1rem;
-  }
-  
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  gap: 10px;
+}
+
+.user-form input, .user-form button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.user-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-form button:hover {
+  background-color: #0056b3;
+}
+
+.user-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #28a745;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}

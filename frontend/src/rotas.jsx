@@ -6,6 +6,7 @@ import { Secretaria } from "./pages/secretaria/secretaria"
 import { Home } from "./pages/home/home"
 import { Coordenador } from "./pages/coordenador/coordenador"
 import { Admin } from "./pages/admin/admin"
+import ResetPasswordPage from "./pages/reset/reset"
 
 function Rotas() {
     return <BrowserRouter>
@@ -17,6 +18,7 @@ function Rotas() {
             <Route path="/secretaria" element={<Secretaria />} />
             <Route path="/coordenador" element={<Coordenador />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/reset" element={<ResetPasswordPage />} />
         </Routes>
     </BrowserRouter>
 }
