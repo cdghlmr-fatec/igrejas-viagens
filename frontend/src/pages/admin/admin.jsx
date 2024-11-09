@@ -1,62 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './admin.css';
+import Navbar from '../../components/navbar/navbar.jsx';
 
 export function Admin() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    // Verificar se o token de autenticação está presente no localStorage
-    const token = localStorage.getItem('token');
-    const roles = JSON.parse(localStorage.getItem('roles'));  // Recuperar as roles do localStorage
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const roles = JSON.parse(localStorage.getItem('roles'));
 
-    if (!token || !roles) {
-      // Se não houver token ou roles, redireciona para a página de login
-      navigate('/login');
-    } else {
-      // Verificar se o usuário tem a role de admin
-      if (!roles.includes('admin')) {
-        // Se o usuário não tem a role de admin, redireciona para o login
-        navigate('/login');
-      } else {
-        // Caso o usuário tenha a role de admin, buscar os dados do usuário
-        fetchUserData(token);
-      }
-    }
-  }, [navigate]);
+        if (!token || !roles || !roles.includes('admin')) {
+            navigate('/login');
+        } else {
+            fetchUserData(token);
+        }
+    }, [navigate]);
 
-  // Função para buscar dados do usuário (simulada aqui)
-  const fetchUserData = async (token) => {
-    // Aqui você pode fazer uma requisição à sua API para pegar dados reais
-    // Por enquanto, vamos simular uma resposta
-    setUser({
-      username: 'ceci', // Substituir por dados reais da API
-      email: 'ceci@exemplo.com',
-    });
-  };
+    const fetchUserData = async (token) => {
+        // Simulação de dados do usuário
+        setUser({ username: 'admin', email: 'admin@example.com' });
+    };
 
-  // Função para logout
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Remover o token do localStorage
-    localStorage.removeItem('roles'); // Remover as roles do localStorage
-    navigate('/login'); // Redireciona para a página de login
-  };
-
-  return (
-    <div className="dashboard-container">
-      <h1>Bem-vindo à Administração!</h1>
-
-      {user ? (
-        <div className="user-info">
-          <p><strong>Nome:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
+    return (
+        <div className="dashboard-container">
+            <Navbar />
+            <h1>Bem-vindo à Administração!</h1>
+            {user ? (
+                <div className="user-info">
+                    <p><strong>Nome:</strong> {user.username}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                </div>
+            ) : (
+                <p>Carregando informações do usuário...</p>
+            )}
         </div>
-      ) : (
-        <p>Carregando informações do usuário...</p>
-      )}
-
-      <button className="btn btn-danger" onClick={handleLogout}>Sair</button>
-    </div>
-  );
+    );
 }

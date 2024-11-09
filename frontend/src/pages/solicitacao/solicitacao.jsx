@@ -1,44 +1,14 @@
-<<<<<<< HEAD
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import './solicitacao.css'
-=======
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './solicitacao.css';
->>>>>>> dev
 
-import logo from '../../assets/ConexAp.png'
-import fundo from '../../assets/fundoConex.jpg'
+import logo from '../../assets/ConexAp.png';
+import fundo from '../../assets/fundoConex.jpg';
 
 export function Solicitacao() {
-    return <div className="row mt-page h-100 w-100 m-0 p-0 ">
-        <div className="col-sm-5 d-flex justify-content-center align-items-center text-center">
+  const navigate = useNavigate();
 
-<<<<<<< HEAD
-            <form className="form-signin w-75 justify-content-center align-items-center text-center p-0">
-                <div className="justify-content-center align-items-center text-center">
-                    <img src={logo} className="logo mb-2" />
-                    <h4 className="mb-4 w-100">Solicite sua conta.</h4>                 
-                    <h5 className="mb-4 text-secondary">Preencha os campos abaixo.</h5>
-                </div>
-                <div className="mt-2">
-                    <input className="w-75" type="text" placeholder="Informe o seu nome completo" />
-                </div>
-                <div className="mt-2">
-                    <input className="w-75" type="text" placeholder="Informe o seu melhor e-mail " />
-                </div>
-                <div className="mt-2">
-                    <input className="w-75" type="text" placeholder="Informe a igreja que congrega" />
-                </div>
-                <div className="mt-2">
-                    <input className="w-75" type="phone" placeholder="Informe um telefone para contato" />
-                </div>
-                <div className="mt-3 mb-5">
-                    <button className="btn-login btn btn-primary w-75" type="button">Solicitar minha conta</button>
-                </div>
-=======
   // Definindo os estados dos campos de formulário e de erro
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -64,21 +34,11 @@ export function Solicitacao() {
   const validatePassword = (password) => {
     return password.length >= 8; // Valida se a senha tem pelo menos 8 caracteres
   };
->>>>>>> dev
 
-                <div>
-                    <span className="me-1">Já tenho uma conta.</span>
-                    <Link to="/">Acessar agora!</Link>
-                </div>
-            </form>
-        </div>
+  // Função para enviar a solicitação para a API
+  const handleRequest = async (e) => {
+    e.preventDefault(); // Impede o envio padrão do formulário
 
-<<<<<<< HEAD
-        <div className="col-sm-7 p-0">
-            <img src={fundo} className="background-login" />
-        </div>
-
-=======
     // Validação simples dos campos
     if (!name || !email || !church || !phone || !password) {
       setError('Por favor, preencha todos os campos.');
@@ -114,7 +74,7 @@ export function Solicitacao() {
 
     const config = {
       method: 'post',
-      url: 'https://bug-free-pancake-69vr9jvqpj4x2459p-8081.app.github.dev/api/auth/signup',
+      url: 'http://localhost:8080/api/auth/signup',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -213,7 +173,6 @@ export function Solicitacao() {
       <div className="col-sm-7 p-0">
         <img src={fundo} className="background-login" alt="Background" />
       </div>
->>>>>>> dev
     </div>
-    
+  );
 }
