@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/navbar/navbar.jsx';
+import './admin.css';
 
 export function Admin() {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [form, setForm] = useState({ username: '', email: '', password: '', phone: '', church: '', roles: '' });
+    const [form, setForm] = useState({ username: '', email: '', password: '', phone: '', church: '', roles: [] });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,10 +23,8 @@ export function Admin() {
 
     const fetchUsers = async (token) => {
         try {
-            const response = await axios.get('https://miniature-journey-559g9jp76j4cvg9v-8090.app.github.dev/api/admin', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await axios.get('http://localhost:8080/api/admin', {
+                headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(response.data);
         } catch (error) {
@@ -36,82 +35,136 @@ export function Admin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('No token found');
-            navigate('/login');
-            return;
-        }
-
-        let data = JSON.stringify(form);
-
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://miniature-journey-559g9jp76j4cvg9v-8090.app.github.dev/api/admin/create',
-            headers: { 
-                'Authorization': `Bearer ${token}`, 
-                'Content-Type': 'application/json'
-            },
-            data: data
+        console.log('Token:', token);
+        
+        // Certifique-se de que roles está no formato correto
+        const userData = {
+            username: form.username,
+            email: form.email,
+            password: form.password,
+            phone: form.phone,
+            church: form.church,
+            roles: form.roles.filter(role => typeof role === 'string') // Filtra para garantir que roles sejam strings
         };
 
         try {
-            const response = await axios.request(config);
-            console.log(JSON.stringify(response.data));
-            setUsers([...users, response.data]);
-            setForm({ username: '', email: '', password: '', phone: '', church: '', roles: '' });
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                console.error('Unauthorized: Invalid or expired token');
-                navigate('/login');
+            if (selectedUser) {
+                console.log('Updating user:', userData);
+                await axios.put(`http://localhost:8080/api/admin/update/${selectedUser.id}`, userData, {
+                    headers: { 
+                        Authorization: `Bearer ${token}`, 
+                        'Content-Type': 'application/json' 
+                    }
+                });
             } else {
-                console.error('Error creating user:', error);
+                console.log('Creating user:', userData);
+                await axios.post('http://localhost:8080/api/admin/create', userData, {
+                    headers: { 
+                        Authorization: `Bearer ${token}`, 
+                        'Content-Type': 'application/json' 
+                    }
+                });
             }
+            fetchUsers(token);
+            resetForm();
+        } catch (error) {
+            console.error('Error saving user:', error.response ? error.response.data : error.message);
         }
     };
 
+    const handleEdit = (user) => {
+        setSelectedUser(user);
+        setForm({ 
+            username: user.username, 
+            email: user.email, 
+            password: '',
+            phone: user.phone, 
+            church: user.church, 
+            roles: user.roles 
+        });
+    };
+
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem('token');
+        try {
+            await axios.delete(`http://localhost:8080/api/admin/delete/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchUsers(token);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
+    const resetForm = () => {
+        setSelectedUser(null);
+        setForm({ username: '', email: '', password: '', phone: '', church: '', roles: [] });
+    };
+
+    const toggleRole = (role) => {
+        setForm((prevForm) => ({
+            ...prevForm,
+            roles: prevForm.roles.includes(role)
+                ? prevForm.roles.filter(r => r !== role)
+                : [...prevForm.roles, role]
+        }));
+    };
+
     return (
-        <div className="container mt-5">
+        <div className="container mt-4">
             <Navbar />
-            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+            <h1 className="text-center mb-4">Admin - Gerenciar Usuários</h1>
             <div className="content">
-                <h1 className="text-center mb-4">Admin Dashboard</h1>
-                <div className="form-container mb-4">
-                    <form className="user-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <input type="text" placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="form-control" required />
+                <div className="form-container">
+                    <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded bg-light">
+                        <div className="mb-3">
+                            <input type="text" className="form-control" placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
                         </div>
-                        <div className="form-group">
-                            <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="form-control" required />
+                        <div className="mb-3">
+                            <input type="email" className="form-control" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
                         </div>
-                        <div className="form-group">
-                            <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="form-control" required />
+                        <div className="mb-3">
+                            <input type="password" className="form-control" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
                         </div>
-                        <div className="form-group">
-                            <input type="text" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="form-control" required />
+                        <div className="mb-3">
+                            <input type="text" className="form-control" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
                         </div>
-                        <div className="form-group">
-                            <input type="text" placeholder="Church" value={form.church} onChange={(e) => setForm({ ...form, church: e.target.value })} className="form-control" required />
+                        <div className="mb-3">
+                            <input type="text" className="form-control" placeholder="Church" value={form.church} onChange={(e) => setForm({ ...form, church: e.target.value })} required />
                         </div>
-                        <div className="form-group">
-                            <select value={form.roles} onChange={(e) => setForm({ ...form, roles: e.target.value })} className="form-control" required>
-                                <option value="">Select Role</option>
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="SECRETARIA">SECRETARIA</option>
-                                <option value="COORDENADOR">COORDENADOR</option>
-                            </select>
+
+                        <div className="mb-3">
+                            <label className="form-label">Roles:</label>
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" checked={form.roles.includes('ADMIN')} onChange={() => toggleRole('ADMIN')} />
+                                <label className="form-check-label">Admin</label>
+                            </div>
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" checked={form.roles.includes('SECRETARIA')} onChange={() => toggleRole('SECRETARIA')} />
+                                <label className="form-check-label">Secretaria</label>
+                            </div>
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" checked={form.roles.includes('COORDENADOR')} onChange={() => toggleRole('COORDENADOR')} />
+                                <label className="form-check-label">Coordenador</label>
+                            </div>
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
+
+                        <button type="submit" className="btn btn-primary me-2">{selectedUser ? 'Atualizar' : 'Criar'} Usuário</button>
+                        <button type="button" onClick={resetForm} className="btn btn-secondary">Cancelar</button>
                     </form>
                 </div>
+
                 <div className="user-list">
+                    <h2>Lista de Usuários</h2>
                     <ul className="list-group">
                         {users.map(user => (
                             <li key={user.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                <span>{user.username}</span>
-                                <div className="actions">
-                                    <button className="btn btn-success mr-2">Edit</button>
-                                    <button className="btn btn-danger">Delete</button>
+                                <span>
+                                    <strong>{user.username}</strong> - {user.email}
+                                </span>
+                                <div>
+                                    <button onClick={() => handleEdit(user)} className="btn btn-warning btn-sm me-2">Editar</button>
+                                    <button onClick={() => handleDelete(user.id)} className="btn btn-danger btn-sm">Deletar</button>
                                 </div>
                             </li>
                         ))}

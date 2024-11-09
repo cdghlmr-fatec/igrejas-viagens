@@ -5,4 +5,9 @@
 .cabecalho {
     background-color: #0F67B1;
     height: 20%;
+    z-index: 1000;
+}
+
+.container-fluid {
+    padding-top: 70px;
 }

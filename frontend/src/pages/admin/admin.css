@@ -7,7 +7,9 @@
 .content {
   max-width: 800px;
   margin: 0 auto;
-  padding-top: 60px;
+  padding-top: 20%;
+  display: flex;
+  gap: 20px;
 }
 
 h1, h2 {
@@ -16,9 +18,7 @@ h1, h2 {
 }
 
 .form-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex: 1;
 }
 
 .user-form {
@@ -48,9 +48,8 @@ h1, h2 {
   background-color: #0056b3;
 }
 
-.user-list ul {
-  list-style: none;
-  padding: 0;
+.user-list {
+  flex: 1;
 }
 
 .user-item {
