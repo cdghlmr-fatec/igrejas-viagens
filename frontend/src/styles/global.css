@@ -10,17 +10,5 @@ html,
 body {
     font-family: "Poppins";
     overflow-x: hidden;
-}
-
-.mt-page {
-    margin-top: 90px;
-}
-
-select {
-    border: 0px;
-    background-color: #150c18;
-
-    cursor: pointer;
-    /*min-width: 200px;*/
-    width: 100%;
+    margin: 60px;
 }

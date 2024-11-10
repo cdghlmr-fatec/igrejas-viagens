@@ -23,9 +23,11 @@ export function Login() {
             const { accessToken, roles } = response.data;
     
             console.log('Roles:', roles); // Verifique as roles retornadas
+            console.log('Username:', username); // Verifique o username
     
             localStorage.setItem('token', accessToken);
             localStorage.setItem('roles', JSON.stringify(roles));
+            localStorage.setItem('username', username);
     
             // Verifique se roles é um array
             if (Array.isArray(roles)) {

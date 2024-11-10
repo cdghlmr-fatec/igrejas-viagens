@@ -11,9 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.fatec.api.models.Excursion;
 import com.fatec.api.services.ExcursionService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/secretaria")
 public class SecretariaController {
