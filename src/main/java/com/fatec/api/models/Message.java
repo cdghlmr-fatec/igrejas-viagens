@@ -1,9 +1,9 @@
-package com.fatec.api.payload.response;
+package com.fatec.api.models;
 
-public class MessageResponse {
+public class Message {
 	private String message;
 
-	public MessageResponse(String message) {
+	public Message(String message) {
 	    this.message = message;
 	  }
 

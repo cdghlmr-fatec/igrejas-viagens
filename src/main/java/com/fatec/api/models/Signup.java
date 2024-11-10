@@ -1,10 +1,10 @@
-package com.fatec.api.payload.request;
+package com.fatec.api.models;
 
 import java.util.Set;
 
 import jakarta.validation.constraints.*;
 
-public class SignupRequest {
+public class Signup {
   
     @NotBlank
     @Size(min = 3, max = 20)

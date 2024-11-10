@@ -1,8 +1,8 @@
-package com.fatec.api.payload.response;
+package com.fatec.api.models;
 
 import java.util.List;
 
-public class JwtResponse {
+public class Jwt {
 	private String token;
 	private String type = "Bearer";
 	private String id;
@@ -10,7 +10,7 @@ public class JwtResponse {
 	private String email;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, String id, String username, String email, List<String> roles) {
+	public Jwt(String accessToken, String id, String username, String email, List<String> roles) {
 		this.token = accessToken;
 		this.id = id;
 		this.username = username;
