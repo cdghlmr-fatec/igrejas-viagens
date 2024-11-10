@@ -1,4 +1,4 @@
-package com.fatec.api.controllers.admin;
+package com.fatec.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.fatec.api.models.EmployeeRole;
+import com.fatec.api.models.Message;
 import com.fatec.api.models.Role;
+import com.fatec.api.models.Signup;
 import com.fatec.api.models.User;
-import com.fatec.api.payload.request.SignupRequest;
-import com.fatec.api.payload.response.MessageResponse;
 import com.fatec.api.repository.RoleRepository;
 import com.fatec.api.repository.UserRepository;
 import com.fatec.api.security.jwt.JwtUtils;
@@ -61,20 +61,20 @@ public class AdminController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
 
 		// Check if the username is already taken
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new Message("Error: Username is already taken!"));
 		}
 
 		// Check if the email is already in use
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+					.body(new Message("Error: Email is already in use!"));
 		}
 
 		// Create a new user's account
@@ -116,12 +116,12 @@ public class AdminController {
 		userRepository.save(user);
 
 		// Return a success message upon successful registration
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new Message("User registered successfully!"));
 	}
 
     @PutMapping("update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody SignupRequest userDetails) {
+    public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody Signup userDetails) {
         // Verificar se o usuário existe
         User existingUser = userRepository.findById(id).orElse(null);
         if (existingUser == null) {
@@ -171,7 +171,7 @@ public class AdminController {
         existingUser.setRoles(roles); // Atualizar as roles do usuário
         userRepository.save(existingUser); // Salvar as alterações no banco de dados
 
-        return ResponseEntity.ok(new MessageResponse("User updated successfully!")); // Retornar mensagem de sucesso
+        return ResponseEntity.ok(new Message("User updated successfully!")); // Retornar mensagem de sucesso
     }
 
     @DeleteMapping("delete/{id}")
@@ -183,6 +183,6 @@ public class AdminController {
         }
 
         adminService.deleteUser(id); // Chamar o serviço para deletar o usuário
-        return ResponseEntity.ok(new MessageResponse("User deleted successfully!")); // Retornar mensagem de sucesso
+        return ResponseEntity.ok(new Message("User deleted successfully!")); // Retornar mensagem de sucesso
     }
 }
