@@ -7,8 +7,12 @@ import com.fatec.api.models.Payment;
 import com.fatec.api.services.PaymentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
+
+
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/pagamentos")
 public class PaymentController {
