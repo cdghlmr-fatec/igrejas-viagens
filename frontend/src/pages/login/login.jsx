@@ -22,12 +22,10 @@ export function Login() {
             const response = await axios.post('http://localhost:8080/api/auth/signin', { username, password });
             const { accessToken, roles } = response.data;
     
-            console.log('Roles:', roles); // Verifique as roles retornadas
-            console.log('Username:', username); // Verifique o username
-    
             localStorage.setItem('token', accessToken);
             localStorage.setItem('roles', JSON.stringify(roles));
             localStorage.setItem('username', username);
+            localStorage.setItem('email', response.data.email);
     
             // Verifique se roles é um array
             if (Array.isArray(roles)) {

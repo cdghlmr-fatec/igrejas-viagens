@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const ExcursaoList = ({ excursaoData = [], fetchExcursaoData }) => {
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ id: '', destino: '', data: '' });
+  const [formData, setFormData] = useState({ id: '', date: '', destination: '', busIds: [''], reservations: [''] });
   const [editing, setEditing] = useState(false);
-
-  useEffect(() => {
-    console.log('Excursao Data:', excursaoData);
-  }, [excursaoData]);
 
   const handleShowModal = (excursao = null) => {
     setEditing(!!excursao);
-    setFormData(excursao || { id: '', destino: '', data: '' });
+    setFormData(excursao || { id: '', date: '', destination: '', busIds: [''], reservations: [''] });
     setShowModal(true);
   };
 
@@ -22,6 +18,36 @@ const ExcursaoList = ({ excursaoData = [], fetchExcursaoData }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBusIdChange = (index, value) => {
+    const newBusIds = [...formData.busIds];
+    newBusIds[index] = value;
+    setFormData((prev) => ({ ...prev, busIds: newBusIds }));
+  };
+
+  const addBusIdField = () => {
+    setFormData((prev) => ({ ...prev, busIds: [...prev.busIds, ''] }));
+  };
+
+  const removeBusIdField = (index) => {
+    const newBusIds = formData.busIds.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, busIds: newBusIds }));
+  };
+
+  const handleReservationChange = (index, value) => {
+    const newReservations = [...formData.reservations];
+    newReservations[index] = value;
+    setFormData((prev) => ({ ...prev, reservations: newReservations }));
+  };
+
+  const addReservationField = () => {
+    setFormData((prev) => ({ ...prev, reservations: [...prev.reservations, ''] }));
+  };
+
+  const removeReservationField = (index) => {
+    const newReservations = formData.reservations.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, reservations: newReservations }));
   };
 
   const handleSubmit = async (e) => {
@@ -40,19 +66,9 @@ const ExcursaoList = ({ excursaoData = [], fetchExcursaoData }) => {
       }
       fetchExcursaoData(token);
       setShowModal(false);
+      console.log('Excursao Data:', excursaoData);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const token = localStorage.getItem('token');
-    try {
-      await axios.delete(`http://localhost:8080/api/secretaria/excursao/${id}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      fetchExcursaoData(token);
-    } catch (error) {
       console.log(error);
     }
   };
@@ -79,25 +95,54 @@ const ExcursaoList = ({ excursaoData = [], fetchExcursaoData }) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="destino">
-              <Form.Label>Destino</Form.Label>
+            <Form.Group controlId="date">
+              <Form.Label>Data</Form.Label>
               <Form.Control
-                type="text"
-                name="destino"
-                value={formData.destino}
+                type="date"
+                name="date"
+                value={formData.date}
                 onChange={handleInputChange}
                 required
               />
             </Form.Group>
-            <Form.Group controlId="data" className="mt-2">
-              <Form.Label>Data</Form.Label>
+            <Form.Group controlId="destination" className="mt-2">
+              <Form.Label>Destino</Form.Label>
               <Form.Control
-                type="date"
-                name="data"
-                value={formData.data}
+                type="text"
+                name="destination"
+                value={formData.destination}
                 onChange={handleInputChange}
                 required
               />
+            </Form.Group>
+            <Form.Group controlId="busIds" className="mt-2">
+              <Form.Label>IDs dos Ônibus</Form.Label>
+              {formData.busIds.map((busId, index) => (
+                <div key={index} className="d-flex mb-2">
+                  <Form.Control
+                    type="text"
+                    value={busId}
+                    onChange={(e) => handleBusIdChange(index, e.target.value)}
+                    required
+                  />
+                  <Button type="button" variant="danger" className="ms-2" onClick={() => removeBusIdField(index)}>Remover</Button>
+                </div>
+              ))}
+              <Button type="button" variant="secondary" className="mt-2" onClick={addBusIdField}>Adicionar ID de Ônibus</Button>
+            </Form.Group>
+            <Form.Group controlId="reservations" className="mt-2">
+              <Form.Label>Reservas</Form.Label>
+              {formData.reservations.map((reservation, index) => (
+                <div key={index} className="d-flex mb-2">
+                  <Form.Control
+                    type="text"
+                    value={reservation}
+                    onChange={(e) => handleReservationChange(index, e.target.value)}
+                  />
+                  <Button type="button" variant="danger" className="ms-2" onClick={() => removeReservationField(index)}>Remover</Button>
+                </div>
+              ))}
+              <Button type="button" variant="secondary" className="mt-2" onClick={addReservationField}>Adicionar Reserva</Button>
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3">{editing ? 'Salvar' : 'Adicionar'}</Button>
           </Form>

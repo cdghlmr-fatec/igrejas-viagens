@@ -41,7 +41,7 @@ const OnibusForm = ({ fetchOnibusData }) => {
       </div>
       <div className="form-group">
         <label>Motorista</label>
-        <input type="text" className="form-control" value={motorista} onChange={(e) => setMotorista(e.target.value)} />
+        <input type="text" className="form-control" value={motorista.map(mot )} onChange={(e) => setMotorista(e.target.value)} />
       </div>
       <div className="form-group">
         <label>Status</label>

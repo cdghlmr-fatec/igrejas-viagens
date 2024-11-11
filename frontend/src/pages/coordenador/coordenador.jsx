@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './coordenador.css';
 
 export function Coordenador() {
-  const [user, setUser] = useState(null);
-  const [reservasData, setReservasData] = useState([]);
-  const [pagamentosData, setPagamentosData] = useState([]);
+  const [reservas, setReservas] = useState([]);
+  const [pagamentos, setPagamentos] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,96 +15,67 @@ export function Coordenador() {
     if (!token || !roles || !roles.includes('ROLE_COORDENADOR')) {
       navigate('/login');
     } else {
-      fetchUserData(token);
-      fetchReservasData(token);
-      fetchPagamentosData(token);
+      fetchReservas(token);
+      fetchPagamentos(token);
     }
   }, [navigate]);
 
-  const fetchUserData = async (token) => {
-    // Simulação de dados do usuário
-    setUser({ username: 'coordenador', email: 'coordenador@example.com' });
-  };
-
-  const fetchReservasData = async (token) => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/coordenador/reservas',
-      headers: { 
-        'Authorization': `Bearer ${token}`
-      }
-    };
-
-    axios.request(config)
-      .then((response) => {
-        console.log('Reservas Data:', response.data);
-        setReservasData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
+  const fetchReservas = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/coordenador/reservas', {
+        headers: { Authorization: `Bearer ${token}` }
       });
+      setReservas(response.data);
+    } catch (error) {
+      console.error('Error fetching reservas:', error);
+    }
   };
 
-  const fetchPagamentosData = async (token) => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/pagamentos',
-      headers: { 
-        'Authorization': `Bearer ${token}`
-      }
-    };
-
-    axios.request(config)
-      .then((response) => {
-        console.log('Pagamentos Data:', response.data);
-        setPagamentosData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
+  const fetchPagamentos = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/pagamentos', {
+        headers: { Authorization: `Bearer ${token}` }
       });
-  };
-
-  // Função para logout
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Remover o token do localStorage
-    localStorage.removeItem('roles'); // Remover as roles do localStorage
-    navigate('/login'); // Redireciona para a página de login
+      setPagamentos(response.data);
+    } catch (error) {
+      console.error('Error fetching pagamentos:', error);
+    }
   };
 
   return (
-    <div className="dashboard-container">
-      <h1>Bem-vindo, Coordenador!</h1>
+    <div className="coordenador-container">
+      <h1>Dashboard do Coordenador</h1>
+      
+      <div className="reservas-section">
+        <h2>Reservas</h2>
+        <ul className="reservas-list">
+          {reservas.map((reserva, id) => (
+            <li key={id} className="reserva-item">
+              <div>Usuário: {reserva.userId}</div>
+              <div>Data: {reserva.reservationDate}</div>
+              <div>Buses: {reserva.busId}</div>
+              <div>Excursão: {reserva.excursionId}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {user ? (
-        <div className="user-info">
-          <p><strong>Nome:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-        </div>
-      ) : (
-        <p>Carregando informações do usuário...</p>
-      )}
-
-      <h2>Reservas</h2>
-      <ul className="list-group">
-        {reservasData.map((reserva) => (
-          <li key={reserva.id} className="list-group-item">
-            {reserva.userId} - {reserva.excursionId} - {reserva.busId} - {reserva.reservationDate}
-          </li>
-        ))}
-      </ul>
-
-      <h2>Pagamentos</h2>
-      <ul className="list-group">
-        {pagamentosData.map((pagamento) => (
-          <li key={pagamento.paymentId} className="list-group-item">
-            {pagamento.reservationId} - {pagamento.passengerName} - {pagamento.amount} - {pagamento.paymentDate} - {pagamento.status}
-          </li>
-        ))}
-      </ul>
-
-      <button className="btn btn-danger" onClick={handleLogout}>Sair</button>
+      <div className="pagamentos-section">
+        <h2>Pagamentos</h2>
+        <ul className="pagamentos-list">
+          {pagamentos.map((pagamento, id) => (
+            <li key={id} className="pagamento-item">
+              <div>Usuário: {pagamento.passengerName}</div>
+              <div>Reserva: {pagamento.reservationId}</div>
+              <div>Valor: R${pagamento.amount}</div>
+              <div>Data: {pagamento.paymentDate}</div>
+              <div>Status: {pagamento.status}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
+
+export default Coordenador;
