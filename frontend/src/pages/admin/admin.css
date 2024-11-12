@@ -1,20 +1,19 @@
-.container{
+.conteiner{
   display: flex; /* Usar flexbox para layout lado a lado */
   flex-direction: row;
   gap: 20px;
   margin: 150px 50px 0px 50px;
-  max-width: 400px;
 }
 
-.content-admin {
+.content-one {
   flex:1;
 }
-.content-admin2 {
+.content-two {
   flex:1;
 
 }
 
-.content-admin3 {
+.content-three {
   flex:1;
 
 }
@@ -24,6 +23,6 @@
   flex: 1; /* Permite que o formulário ocupe o espaço disponível */
 }
 
-.user-list {
-  flex: 2; /* Permite que a lista de usuários ocupe o espaço disponível */
+.list-container {
+  flex: 1; /* Permite que a lista de usuários ocupe o espaço disponível */
 }
