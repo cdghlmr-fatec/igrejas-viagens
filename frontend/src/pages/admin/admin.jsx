@@ -5,6 +5,7 @@ import './admin.css';
 
 export function Admin() {
     const [users, setUsers] = useState([]);
+    const [onibus, setOnibus] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [form, setForm] = useState({ username: '', email: '', password: '', phone: '', church: '', roles: [] });
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export function Admin() {
             navigate('/login');
         } else {
             fetchUsers(token);
+            fetchOnibus(token);
         }
     }, [navigate]);
 
@@ -31,37 +33,40 @@ export function Admin() {
         }
     };
 
+    const fetchOnibus = async (token) => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/secretaria/onibus', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setOnibus(response.data);
+        } catch (error) {
+            console.error('Error fetching buses:', error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        console.log('Token:', token);
-        
-        // Certifique-se de que roles está no formato correto
+
         const userData = {
             username: form.username,
             email: form.email,
             password: form.password,
             phone: form.phone,
             church: form.church,
-            roles: form.roles.filter(role => typeof role === 'string') // Filtra para garantir que roles sejam strings
+            roles: form.roles.filter(role => typeof role === 'string') // Filter to ensure roles are strings
         };
 
         try {
             if (selectedUser) {
-                console.log('Updating user:', userData);
+                // Update user
                 await axios.put(`http://localhost:8080/api/admin/update/${selectedUser.id}`, userData, {
-                    headers: { 
-                        Authorization: `Bearer ${token}`, 
-                        'Content-Type': 'application/json' 
-                    }
+                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
                 });
             } else {
-                console.log('Creating user:', userData);
+                // Create user
                 await axios.post('http://localhost:8080/api/admin/create', userData, {
-                    headers: { 
-                        Authorization: `Bearer ${token}`, 
-                        'Content-Type': 'application/json' 
-                    }
+                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
                 });
             }
             fetchUsers(token);
@@ -73,13 +78,13 @@ export function Admin() {
 
     const handleEdit = (user) => {
         setSelectedUser(user);
-        setForm({ 
-            username: user.username, 
-            email: user.email, 
+        setForm({
+            username: user.username,
+            email: user.email,
             password: '',
-            phone: user.phone, 
-            church: user.church, 
-            roles: user.roles 
+            phone: user.phone,
+            church: user.church,
+            roles: user.roles
         });
     };
 
@@ -95,13 +100,29 @@ export function Admin() {
         }
     };
 
+    const handleEditBus = (bus) => {
+        // Handle bus edit logic here
+    };
+
+    const handleDeleteBus = async (id) => {
+        const token = localStorage.getItem('token');
+        try {
+            await axios.delete(`http://localhost:8080/api/secretaria/onibus/delete/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchOnibus(token);
+        } catch (error) {
+            console.error('Error deleting bus:', error);
+        }
+    };
+
     const resetForm = () => {
         setSelectedUser(null);
         setForm({ username: '', email: '', password: '', phone: '', church: '', roles: [] });
     };
 
     const toggleRole = (role) => {
-        setForm((prevForm) => ({
+        setForm(prevForm => ({
             ...prevForm,
             roles: prevForm.roles.includes(role)
                 ? prevForm.roles.filter(r => r !== role)
@@ -110,7 +131,7 @@ export function Admin() {
     };
 
     return (
-        <div>
+        <div className='container'>
             <div className="content-admin">
                 <div className="form-container">
                     <h1 className="text-center mb-4">Admin - Gerenciar Usuários</h1>
@@ -168,7 +189,27 @@ export function Admin() {
                                     <button className="btn btn-warning me-2" onClick={() => handleEdit(user)}>Editar</button>
                                     <button className="btn btn-danger" onClick={() => handleDelete(user.id)}>Excluir</button>
                                 </div>
-                                
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+
+            <div className="content-admin2">
+                <div className="user-list">
+                    <h2>Lista de Ônibus</h2>
+                    <ul className="list-group">
+                        {onibus.map(bus => (
+                            <li key={bus.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{bus.plate}</strong> ({bus.capacity})
+                                    <br />
+                                    <small>{bus.model} - {bus.driverName} - {bus.status}</small>
+                                </div>
+                                <div>
+                                    <button className="btn btn-warning me-2" onClick={() => handleEditBus(bus)}>Editar</button>
+                                    <button className="btn btn-danger" onClick={() => handleDeleteBus(bus.id)}>Excluir</button>
+                                </div>
                             </li>
                         ))}
                     </ul>

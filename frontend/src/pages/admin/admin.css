@@ -1,9 +1,24 @@
-.content-admin {
+.container{
   display: flex; /* Usar flexbox para layout lado a lado */
   flex-direction: row;
   gap: 20px;
   margin: 150px 50px 0px 50px;
+  max-width: 400px;
 }
+
+.content-admin {
+  flex:1;
+}
+.content-admin2 {
+  flex:1;
+
+}
+
+.content-admin3 {
+  flex:1;
+
+}
+
 
 .form-container {
   flex: 1; /* Permite que o formulário ocupe o espaço disponível */
