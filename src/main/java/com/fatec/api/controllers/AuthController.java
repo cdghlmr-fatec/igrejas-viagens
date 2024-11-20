@@ -7,13 +7,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fatec.api.models.EmployeeRole;
+import com.fatec.api.models.Jwt;
+import com.fatec.api.models.Login;
+import com.fatec.api.models.Message;
 import com.fatec.api.models.Role;
+import com.fatec.api.models.SendPassword;
+import com.fatec.api.models.Signup;
 import com.fatec.api.models.User;
-import com.fatec.api.payload.request.LoginRequest;
-import com.fatec.api.payload.request.SignupRequest;
-import com.fatec.api.payload.request.SendPasswordRequest; // Importa a nova classe de solicitação
-import com.fatec.api.payload.response.JwtResponse;
-import com.fatec.api.payload.response.MessageResponse;
 import com.fatec.api.repository.RoleRepository;
 import com.fatec.api.repository.UserRepository;
 import com.fatec.api.security.jwt.JwtUtils;
@@ -28,7 +28,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +37,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.MailSendException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -68,7 +68,7 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody Login loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword()));
@@ -81,7 +81,7 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new Jwt(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
@@ -89,17 +89,17 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new Message("Error: Username is already taken!"));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new Message("Error: Email is already in use!"));
         }
 
         User user = new User(signUpRequest.getUsername(),
@@ -137,15 +137,15 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new Message("User registered successfully!"));
     }
 
     @PostMapping("/send-password")
-    public ResponseEntity<?> sendPassword(@Valid @RequestBody SendPasswordRequest request) {
+    public ResponseEntity<?> sendPassword(@Valid @RequestBody SendPassword request) {
         // Usar AdminService para buscar o usuário por e-mail
         User user = adminService.getUserByEmail(request.getEmail());
         if (user == null) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email not found!"));
+            return ResponseEntity.badRequest().body(new Message("Error: Email not found!"));
         }
 
         // Gerar nova senha temporária
@@ -163,10 +163,10 @@ public class AuthController {
         } catch (MailSendException e) {
             // Log the error and provide feedback
             logger.error("Failed to send email: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to send email!"));
+            return ResponseEntity.badRequest().body(new Message("Error: Unable to send email!"));
         }
 
-        return ResponseEntity.ok(new MessageResponse("Nova senha enviada para o e-mail!"));
+        return ResponseEntity.ok(new Message("Nova senha enviada para o e-mail!"));
     }
 
     // Método para gerar uma senha aleatória
