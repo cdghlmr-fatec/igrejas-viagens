@@ -1,6 +1,0 @@
-*target
-*.vscode
-*.DS_Store
-*node_modules
-collections/
-docs/
