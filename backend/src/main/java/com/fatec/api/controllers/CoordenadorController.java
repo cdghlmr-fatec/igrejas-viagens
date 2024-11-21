@@ -46,14 +46,14 @@ public class CoordenadorController {
         return ResponseEntity.ok(createdReservation);
     }
 
-    @PutMapping("/reservas/{id}")
-    @PreAuthorize("hasRole('SECRETARIA') or " +
-            "hasRole('COORDENADOR') or " +
-            "hasRole('ADMIN')")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable String id, @Valid @RequestBody Reservation reservation) {
-        Reservation updatedReservation = reservationService.updateReservation(id, reservation);
-        return ResponseEntity.ok(updatedReservation);
-    }
+    // @PutMapping("/reservas/{id}")
+    // @PreAuthorize("hasRole('SECRETARIA') or " +
+    //         "hasRole('COORDENADOR') or " +
+    //         "hasRole('ADMIN')")
+    // public ResponseEntity<Reservation> updateReservation(@PathVariable String id, @Valid @RequestBody Reservation reservation) {
+    //     Reservation updatedReservation = reservationService.updateReservation(id, reservation);
+    //     return ResponseEntity.ok(updatedReservation);
+    // }
 
     @DeleteMapping("/reservas/{id}")
     @PreAuthorize("hasRole('SECRETARIA') or " +

@@ -22,25 +22,25 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    public Reservation updateReservation(String id, Reservation reservation) {
-        Reservation reservationToUpdate = reservationRepository.findById(id).orElse(null);
-        if (reservationToUpdate == null) {
-            return null;
-        }
-        /*
-         private String id;
-        private String userId;
-        private String excursionId;
-        private String busId;
-    private LocalDateTime reservationDate;
-            */
+    // public Reservation updateReservation(String id, Reservation reservation) {
+    //     Reservation reservationToUpdate = reservationRepository.findById(id).orElse(null);
+    //     if (reservationToUpdate == null) {
+    //         return null;
+    //     }
+    //     /*
+    //      private String id;
+    //     private String userId;
+    //     private String excursionId;
+    //     private String busId;
+    // private LocalDateTime reservationDate;
+    //         */
 
-        reservationToUpdate.setUserId(reservation.getUserId());
-        reservationToUpdate.setExcursionId(reservation.getExcursionId());
-        reservationToUpdate.setBusId(reservation.getBusId());
-        reservationToUpdate.setReservationDate(reservation.getReservationDate());
-        return reservationRepository.save(reservationToUpdate);
-    }
+    //     reservationToUpdate.setUserId(reservation.getUserId());
+    //     reservationToUpdate.setExcursionId(reservation.getExcursionId());
+    //     reservationToUpdate.setBusId(reservation.getBusId());
+    //     reservationToUpdate.setReservationDate(reservation.getReservationDate());
+    //     return reservationRepository.save(reservationToUpdate);
+    // }
 
     public void deleteReservation(String id) {
         reservationRepository.deleteById(id);
