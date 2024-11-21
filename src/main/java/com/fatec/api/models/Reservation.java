@@ -1,5 +1,9 @@
 package com.fatec.api.models;
 
+import java.util.HashSet;
+import java.util.Set;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,43 +13,44 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     private String id;
-    private String userId;
-    private String excursionId;
-    private String busId;
-    private LocalDate reservationDate;
+    private LocalDate data;
 
-    
-    
+    @DBRef
+    private Set<Bus> bus = new HashSet<>();
+
+    @DBRef
+    private Set<Reservation> reservation = new HashSet<>();
+
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
-    public String getUserId() {
-        return userId;
-    }
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-    public String getExcursionId() {
-        return excursionId;
-    }
-    public void setExcursionId(String excursionId) {
-        this.excursionId = excursionId;
-    }
-    public String getBusId() {
-        return busId;
-    }
-    public void setBusId(String busId) {
-        this.busId = busId;
-    }
-    public LocalDate getReservationDate() {
-        return reservationDate;
-    }
-    public void setReservationDate(LocalDate reservationDate) {
-        this.reservationDate = reservationDate;
+
+    public LocalDate getData() {
+        return data;
     }
 
-    // Getters and Setters
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public Set<Bus> getBus() {
+        return bus;
+    }
+
+    public void setBus(Set<Bus> bus) {
+        this.bus = bus;
+    }
+
+    public Set<Reservation> getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Set<Reservation> reservation) {
+        this.reservation = reservation;
+    }
+
 } 

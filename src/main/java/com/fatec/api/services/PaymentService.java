@@ -1,7 +1,7 @@
 package com.fatec.api.services;
 
 import com.fatec.api.models.Payment;
-import com.fatec.api.repositories.PaymentRepository;
+import com.fatec.api.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

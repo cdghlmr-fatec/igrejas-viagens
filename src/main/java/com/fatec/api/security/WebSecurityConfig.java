@@ -2,8 +2,7 @@ package com.fatec.api.security;
 
 import com.fatec.api.security.jwt.AuthEntryPointJwt; // Import for unauthorized access handler
 import com.fatec.api.security.jwt.AuthTokenFilter; // Import for JWT token filter
-import com.fatec.api.security.jwt.UserDetailsServiceImpl;
-
+import com.fatec.api.security.services.UserDetailsServiceImpl; // Import for user details service implementation
 import org.springframework.beans.factory.annotation.Autowired; // Import for dependency injection
 import org.springframework.context.annotation.Bean; // Import for Spring configuration
 import org.springframework.context.annotation.Configuration; // Import for configuration class

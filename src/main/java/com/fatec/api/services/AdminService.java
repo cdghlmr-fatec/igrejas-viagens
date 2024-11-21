@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fatec.api.models.User;
-import com.fatec.api.repositories.UserRepository;
+import com.fatec.api.repository.UserRepository;
 
 import java.util.List;
 
 @Service
 public class AdminService {
+
     @Autowired
     private UserRepository userRepository;
 

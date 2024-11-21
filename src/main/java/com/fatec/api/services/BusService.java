@@ -1,7 +1,7 @@
 package com.fatec.api.services;
 
 import com.fatec.api.models.Bus;
-import com.fatec.api.repositories.BusRepository;
+import com.fatec.api.repository.BusRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 

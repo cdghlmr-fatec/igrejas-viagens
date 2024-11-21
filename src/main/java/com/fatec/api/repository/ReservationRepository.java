@@ -1,4 +1,4 @@
-package com.fatec.api.repositories;
+package com.fatec.api.repository;
 
 import com.fatec.api.models.Reservation;
 import org.springframework.data.mongodb.repository.MongoRepository;

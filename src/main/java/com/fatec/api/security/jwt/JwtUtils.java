@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory; // Import LoggerFactory for creating Logger inst
 import org.springframework.beans.factory.annotation.Value; // Import Value for dependency injection
 import org.springframework.security.core.Authentication; // Import Authentication for handling user authentication
 import org.springframework.stereotype.Component; // Import Component for Spring component scanning
-
+import com.fatec.api.security.services.UserDetailsImpl; // Import custom user details implementation
 import io.jsonwebtoken.*; // Import the JJWT library classes for handling JWT
 import io.jsonwebtoken.io.Decoders; // Import Decoders for decoding JWT secret
 import io.jsonwebtoken.security.Keys; // Import Keys for creating keys for JWT signing

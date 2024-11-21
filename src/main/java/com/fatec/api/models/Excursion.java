@@ -6,46 +6,67 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.util.List;
 
-@Document(collection = "excursao")
+@Document(collection = "excursoes")
 public class Excursion {
     @Id
     private String id;
-    private LocalDate date;
-    private String destination;
-    private List<String> busIds;
-    private List<Reservation> reservations;
 
-    public Excursion() {
-    }
+    private String destination;
+
+    private LocalDate date;
+
+    private List<Bus> onibus;
+
+    private List<ListaEspera> lista_espera;
+
+    private List<ControlePresenca> controles_presenca;
 
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
-    public LocalDate getDate() {
-        return date;
-    }
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+
     public String getDestination() {
         return destination;
     }
+
     public void setDestination(String destination) {
         this.destination = destination;
     }
-    public List<String> getBusIds() {
-        return busIds;
+
+    public LocalDate getData() {
+        return date;
     }
-    public void setBusIds(List<String> busIds) {
-        this.busIds = busIds;
+
+    public void setData(LocalDate date) {
+        this.date = date;
     }
-    public List<Reservation> getReservations() {
-        return reservations;
+
+    public List<Bus> getOnibus() {
+        return onibus;
     }
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
+
+    public void setOnibus(List<Bus> onibus) {
+        this.onibus = onibus;
     }
-} 
+
+    public List<?> getLista_espera() {
+        return lista_espera;
+    }
+
+    public void setLista_espera(List<ListaEspera> lista_espera) {
+        this.lista_espera = lista_espera;
+    }
+
+    public List<?> getControles_presenca() {
+        return controles_presenca;
+    }
+
+    public void setControles_presenca(List<ControlePresenca> controles_presenca) {
+        this.controles_presenca = controles_presenca;
+    }
+
+}

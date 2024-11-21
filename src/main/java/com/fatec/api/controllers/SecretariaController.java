@@ -14,7 +14,8 @@ import com.fatec.api.services.ExcursionService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600) 
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/secretaria")
 public class SecretariaController {
@@ -102,10 +103,7 @@ public class SecretariaController {
     @PreAuthorize("hasRole('SECRETARIA') or " +
             "hasRole('ADMIN')")
     public ResponseEntity<?> createExcursion(@Valid @RequestBody Excursion excursion) {
-        if (excursionService.existsByDestination(excursion.getDestination())) {
-            return ResponseEntity.badRequest().body(new Message("Error: Excursion with this name already exists."));
-        }
-
+        
         try {
             Excursion createdExcursion = excursionService.createExcursion(excursion);
             return ResponseEntity.ok(createdExcursion);
@@ -114,13 +112,13 @@ public class SecretariaController {
         }
     }
 
-    @PutMapping("/excursao/{id}")
-    @PreAuthorize("hasRole('SECRETARIA') or " +
-            "hasRole('ADMIN')")
-    public ResponseEntity<?> updateExcursion(@PathVariable String id, @Valid @RequestBody Excursion excursion) {
-        Excursion updatedExcursion = excursionService.updateExcursion(id, excursion);
-        return updatedExcursion != null ? ResponseEntity.ok(updatedExcursion) : ResponseEntity.notFound().build();
-    }
+    // @PutMapping("/excursao/{id}")
+    // @PreAuthorize("hasRole('SECRETARIA') or " +
+    //         "hasRole('ADMIN')")
+    // public ResponseEntity<?> updateExcursion(@PathVariable String id, @Valid @RequestBody Excursion excursion) {
+    //     Excursion updatedExcursion = excursionService.updateExcursion(id, excursion);
+    //     return updatedExcursion != null ? ResponseEntity.ok(updatedExcursion) : ResponseEntity.notFound().build();
+    // }
 
     @DeleteMapping("/excursao/{id}")
     @PreAuthorize("hasRole('SECRETARIA') or " +

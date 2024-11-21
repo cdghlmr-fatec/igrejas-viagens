@@ -12,8 +12,8 @@ import com.fatec.api.models.Message;
 import com.fatec.api.models.Role;
 import com.fatec.api.models.Signup;
 import com.fatec.api.models.User;
-import com.fatec.api.repositories.RoleRepository;
-import com.fatec.api.repositories.UserRepository;
+import com.fatec.api.repository.RoleRepository;
+import com.fatec.api.repository.UserRepository;
 import com.fatec.api.security.jwt.JwtUtils;
 import com.fatec.api.services.AdminService;
 

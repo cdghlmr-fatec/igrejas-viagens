@@ -7,14 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Bus {
     @Id
     private String id;
-
-    
     private String plate;
-
-    
-    private int capacity;
-    
     private String model;
+    private int capacity;
     private String driverName;
     private String status;
 
@@ -24,38 +19,48 @@ public class Bus {
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public String getPlate() {
         return plate;
     }
+
     public void setPlate(String plate) {
         this.plate = plate;
     }
-    public int getCapacity() {
-        return capacity;
-    }
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
+
     public String getModel() {
         return model;
     }
+
     public void setModel(String model) {
         this.model = model;
     }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
     public String getDriverName() {
         return driverName;
     }
+
     public void setDriverName(String driverName) {
         this.driverName = driverName;
     }
+
     public String getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = status;
     }
-
 }

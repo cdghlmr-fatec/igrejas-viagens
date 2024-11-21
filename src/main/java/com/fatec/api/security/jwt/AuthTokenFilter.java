@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils; // Import StringUtils for string utility methods
 import org.springframework.web.filter.OncePerRequestFilter; // Import OncePerRequestFilter to ensure the filter is applied once per request
 
+import com.fatec.api.security.services.UserDetailsServiceImpl; // Import custom user details service
+
 /**
  * Filter to validate the JWT token and set user authentication in the security context.
  */
