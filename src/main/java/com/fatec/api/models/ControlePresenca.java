@@ -10,35 +10,6 @@ import java.util.List;
 public class ControlePresenca {
     @Id
     private String id;
-    
-    /*
-     * excursao_id
-672279ac90460a532721ac85
-coordenador_id
-60d5f6f8f1f1a85c4c4d6f19
-tipo_chamada
-"ida"
-data_chamada
-2023-10-11T08:00:00.000+00:00
-
-passageiros
-Array (2)
-
-0
-Object
-passageiro_id
-60d5f6f8f1f1a85c4c4d6f20
-presente
-true
-
-1
-Object
-passageiro_id
-60d5f6f8f1f1a85c4c4d6f21
-presente
-false
-     */
-
     private String excursao_id;
     private String coordenador_id;
     private String tipo_chamada;
