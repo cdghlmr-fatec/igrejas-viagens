@@ -1,9 +1,5 @@
 package com.fatec.api.models;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
