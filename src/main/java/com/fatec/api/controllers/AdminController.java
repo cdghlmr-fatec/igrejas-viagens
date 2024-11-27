@@ -119,7 +119,7 @@ public class AdminController {
 		return ResponseEntity.ok(new Message("User registered successfully!"));
 	}
 
-    @PutMapping("update/{id}")
+    @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody Signup userDetails) {
         // Verificar se o usuário existe
