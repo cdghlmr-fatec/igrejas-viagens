@@ -119,60 +119,62 @@ public class AdminController {
 		return ResponseEntity.ok(new Message("User registered successfully!"));
 	}
 
-    @PutMapping("update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody Signup userDetails) {
-        // Verificar se o usuário existe
-        User existingUser = userRepository.findById(id).orElse(null);
-        if (existingUser == null) {
-            return ResponseEntity.notFound().build(); // Retorna 404 se o usuário não for encontrado
-        }
-
-        // Atualizar os detalhes do usuário
-        existingUser.setUsername(userDetails.getUsername());
-        existingUser.setEmail(userDetails.getEmail());
-        existingUser.setPhone(userDetails.getPhone());
-        existingUser.setChurch(userDetails.getChurch());
-
-        // Atualizar a senha se fornecida
-        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-            existingUser.setPassword(encoder.encode(userDetails.getPassword())); // Codificar a nova senha
-        }
-
-        // Atualizar as roles
-        Set<String> strRoles = userDetails.getRoles();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "ADMIN":
-                        Role adminRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        break;
-                    case "COORDENADOR":
-                        Role modRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(EmployeeRole.ROLE_SECRETARIA)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
-
-        existingUser.setRoles(roles); // Atualizar as roles do usuário
-        userRepository.save(existingUser); // Salvar as alterações no banco de dados
-
-        return ResponseEntity.ok(new Message("User updated successfully!")); // Retornar mensagem de sucesso
+    @PutMapping("/update/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody Signup userDetails) {
+    // Verificar se o usuário existe
+    User existingUser = userRepository.findById(id).orElse(null);
+    if (existingUser == null) {
+        return ResponseEntity.notFound().build(); // Retorna 404 se o usuário não for encontrado
     }
+
+    // Atualizar os detalhes do usuário
+    existingUser.setUsername(userDetails.getUsername());
+    existingUser.setEmail(userDetails.getEmail());
+    existingUser.setPhone(userDetails.getPhone());
+    existingUser.setChurch(userDetails.getChurch());
+
+    // Atualizar a senha se fornecida
+    if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+        existingUser.setPassword(encoder.encode(userDetails.getPassword())); // Codificar a nova senha
+    }
+
+    // Limpar as roles antigas
+    existingUser.getRoles().clear();  // Limpa todas as roles atuais do usuário
+
+    // Se o campo de roles estiver vazio, não adicione nenhuma role
+    Set<String> strRoles = userDetails.getRoles();
+    if (strRoles != null && !strRoles.isEmpty()) {
+        Set<Role> roles = new HashSet<>();
+        
+        // Adiciona as roles fornecidas
+        strRoles.forEach(role -> {
+            switch (role) {
+                case "ADMIN":
+                    Role adminRole = roleRepository.findByName(EmployeeRole.ROLE_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(adminRole);
+                    break;
+                case "COORDENADOR":
+                    Role modRole = roleRepository.findByName(EmployeeRole.ROLE_COORDENADOR)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(modRole);
+                    break;
+                // Não adicionar nada se for vazio ou não fornecido
+            }
+        });
+
+        // Atribui as novas roles ao usuário
+        existingUser.setRoles(roles);
+    }
+
+    // Salvar as alterações no banco de dados
+    userRepository.save(existingUser); 
+
+    return ResponseEntity.ok(new Message("User updated successfully!"));
+}
+
+
 
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
