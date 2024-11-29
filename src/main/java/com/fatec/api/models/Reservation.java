@@ -81,11 +81,11 @@ public class Reservation {
         this.valor = valor;
     }
 
-    public List<Passageiro> getPassengers() {
+    public List<Passageiro> getPassageiros() {
         return passageiros;
     }
 
-    public void setPassengers(List<Passageiro> passageiros) {
+    public void setPassageiros(List<Passageiro> passageiros) {
         this.passageiros = passageiros;
     }
 } 
